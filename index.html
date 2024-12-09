@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lets ! meet</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap"
+        rel="stylesheet">
+    <style>
+        #hostForm,
+        #joinForm {
+            display: none;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #eaeda0;
+            font-family: "Nunito Sans", sans-serif;
+            font-optical-sizing: auto;
+        }
+
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #eaeda0;
+            height: 100vh;
+            padding: 0px 120px 0px 120px;
+            position: relative;
+        }
+
+        .left {
+            width: 300px;
+            position: absolute;
+            left: 300px;
+        }
+
+        .right {
+            width: 600px;
+            right: 300px;
+            position: absolute;
+        }
+
+        .button-layout {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+        }
+
+        .button-layout button {
+            padding: 12px 24px;
+            margin: 12px;
+            background-color: #5b6d2f;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: medium;
+            animation-name: slidIn;
+            animation-duration: 1s;
+        }
+
+        .img {
+            width: 600px;
+            height: 400px;
+
+        }
+
+        .img img {
+            object-fit: cover;
+            width: 100%;
+        }
+
+        .form {
+            background-color: #eaeda0;
+        }
+
+        #hostForm,
+        #joinForm {
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+            height: 40vh;
+            width: 320px;
+            transition: all 0.5s;
+            animation-name: slidIn;
+            animation-duration: 1s;
+
+        }
+        @keyframes slidIn {
+            from {
+                transform: translatex(-50%);
+            }
+            to {
+                transform: translatex(0%);
+            }
+            
+        }
+
+        #hostForm input,
+        #joinForm input {
+            padding: 10px;
+            margin: 10px;
+            border-radius: 10px;
+            border: 2px solid #5b6d2f;
+            color: #344116;
+            font-size: medium;
+            width: 270px;
+        }
+
+        #hostForm button,
+        #joinForm button {
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: #5b6d2f;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: medium;
+        }
+        .closeBtn{
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="left">
+            <div class="button-layout" id="button-layout">
+                <button id="hostVideo">Host a video call</button>
+                <button id="joinVideo">Join a video call</button>
+            </div>
+            <div class="form">
+                <div id="hostForm">
+                    <svg fill="#5b6d2f" class="closeBtn"  width="24" height="24" viewBox="0 0 32 32"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M18.8,16l5.5-5.5c0.8-0.8,0.8-2,0-2.8l0,0C24,7.3,23.5,7,23,7c-0.5,0-1,0.2-1.4,0.6L16,13.2l-5.5-5.5  c-0.8-0.8-2.1-0.8-2.8,0C7.3,8,7,8.5,7,9.1s0.2,1,0.6,1.4l5.5,5.5l-5.5,5.5C7.3,21.9,7,22.4,7,23c0,0.5,0.2,1,0.6,1.4  C8,24.8,8.5,25,9,25c0.5,0,1-0.2,1.4-0.6l5.5-5.5l5.5,5.5c0.8,0.8,2.1,0.8,2.8,0c0.8-0.8,0.8-2.1,0-2.8L18.8,16z" />
+                </svg>
+                    <input name="username" id="hostUserName" placeholder="Enter the UserName">
+                    <input name="roomid" id="hostRoomId" placeholder="Enter the room id">
+                    <button id="createRoom">Host a Video call</button>
+                </div>
+                <div id="joinForm">
+                        <svg fill="#5b6d2f" class="closeBtn"  width="24px" height="24px" viewBox="0 0 32 32"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M18.8,16l5.5-5.5c0.8-0.8,0.8-2,0-2.8l0,0C24,7.3,23.5,7,23,7c-0.5,0-1,0.2-1.4,0.6L16,13.2l-5.5-5.5  c-0.8-0.8-2.1-0.8-2.8,0C7.3,8,7,8.5,7,9.1s0.2,1,0.6,1.4l5.5,5.5l-5.5,5.5C7.3,21.9,7,22.4,7,23c0,0.5,0.2,1,0.6,1.4  C8,24.8,8.5,25,9,25c0.5,0,1-0.2,1.4-0.6l5.5-5.5l5.5,5.5c0.8,0.8,2.1,0.8,2.8,0c0.8-0.8,0.8-2.1,0-2.8L18.8,16z" />
+                    </svg>
+                    <input name="joinUserName" id="joinUserName" placeholder="Enter the UserName">
+                    <input name="joinRoomId" id="joinRoomId" placeholder="Enter the room id">
+                    <button id="joinRoom">join a Video</button>
+                </div>
+            </div>
+        </div>
+        <div class="right">
+            <div class="img"><img src="./assests/Home.jpg" alt="no_img">
+            </div>
+
+
+        </div>
+    </div>
+
+
+    <script src="./script.js"></script>
+</body>
+
+</html>

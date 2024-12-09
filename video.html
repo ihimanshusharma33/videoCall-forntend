@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebRTC Video Call</title>
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #eaeda0;
+            font-family: "Nunito Sans", sans-serif;
+            font-optical-sizing: auto;
+        }
+
+        .container {
+            display: flex;
+            align-items: start;
+            flex-direction: row-reverse;
+            justify-content: center;
+            background-color: #eaeda0;
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+        }
+
+        .main-container {
+            width: 100vw;
+            border: 2px solid black;
+            height: 100vh;
+        }
+
+
+        .buttonSection {
+            position: absolute;
+            bottom: 10px;
+            left: 33%;
+            padding: 10px 20px;
+            width: 28vw;
+            background-color: #232e05;
+            border-radius: 35px;
+        }
+
+        button {
+            color: #232e05;
+            border: none;
+            margin: 5px 20px;
+            padding: 5px 12px;
+            border-radius: 46%;
+            cursor: pointer;
+
+        }
+
+
+
+        .dragableDiv {
+            width: 15%;
+            height: 30%;
+            border: 2px solid red;
+            background-color: aqua;
+            position: absolute;
+            cursor: move;
+        }
+
+        #remoteVideo {
+            width: 75vw;
+            margin: auto;
+            display: grid;
+            position: absolute;
+            top: 10px;
+            right: 10%;
+            place-content: center;
+            border: 2px solid red;
+        }
+
+        #localVideo {
+            border: 2px solid black;
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+        }
+
+        #chats {
+            display: none;
+            width: 30vw;
+            position: relative;
+            height: 100vh;
+            border: 2px solid #5b6d2f;
+        }
+
+        #closeChat {
+            cursor: pointer;
+            position: absolute;
+            top: 5px;
+            right: 10px;
+
+        }
+
+        .bottom-bar {
+            display: flex;
+            justify-content: center;
+            position: absolute;
+            bottom: 5px;
+            width: 100%;
+        }
+
+        #chats textarea {
+            width: 20rem;
+            padding: 4px;
+            margin: 10px;
+            border-radius: 10px;
+            border: 2px solid #5b6d2f;
+            color: #344116;
+            font-size: medium;
+        }
+
+        #sendChat {
+            color: #5b6d2f;
+            cursor: pointer;
+            padding: 2px !important;
+            margin: 0px !important;
+        }
+
+        header {
+            height: 4rem;
+            border: 2px solid #5b6d2f;
+        }
+
+        header h1 {
+            color: #5b6d2f;
+            padding: 10px;
+        }
+
+        #chatMessages {
+            height: 80vh;
+            overflow-y: scroll;
+        }
+
+        #chatMessages ul {
+            list-style-type: none;
+        }
+
+        #chatMessages ul li {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 10px;
+            background-color: #5b6d2f;
+            color: #eaeda0;
+            width: fit-content;
+        }
+
+        #closeChat {
+            color: #5b6d2f;
+            padding: 10px;
+            cursor: pointer;
+        }
+        #endCall{
+            color: #232e05; 
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="confirmation-box">
+    </div>
+    <div class="container">
+        <div class="main-container">
+            <button id="chatButton">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-menu">
+                    <line x1="4" x2="20" y1="12" y2="12" />
+                    <line x1="4" x2="20" y1="6" y2="6" />
+                    <line x1="4" x2="20" y1="18" y2="18" />
+                </svg>
+            </button>
+            <video id="remoteVideo" autoplay playsinline>This is Remote Videp</video>
+            <video id="localVideo" class="dragableDiv" autoplay playsinline muted></video>
+            <div class="buttonSection">
+                <button id="muteAudio">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-mic">
+                        <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                        <line x1="12" x2="12" y1="19" y2="22" />
+                    </svg>
+                </button>
+                <button id="muteVideo">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-video">
+                        <path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5" />
+                        <rect x="2" y="6" width="14" height="12" rx="2" />
+                    </svg>
+                </button>
+                <button id="endCall">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="#232e05" height="28px" viewBox="0 -960 960 960" width="28px">
+                        <path
+                            d="m136-304-92-90q-12-12-12-28t12-28q88-95 203-142.5T480-640q118 0 232.5 47.5T916-450q12 12 12 28t-12 28l-92 90q-11 11-25.5 12t-26.5-8l-116-88q-8-6-12-14t-4-18v-114q-38-12-78-19t-82-7q-42 0-82 7t-78 19v114q0 10-4 18t-12 14l-116 88q-12 9-26.5 8T136-304Zm104-198q-29 15-56 34.5T128-424l40 40 72-56v-62Zm480 2v60l72 56 40-38q-29-26-56-45t-56-33Zm-480-2Zm480 2Z" />
+                    </svg>
+                </button>
+                <button id="openChat">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-message-circle-more">
+                        <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+                        <path d="M8 12h.01" />
+                        <path d="M12 12h.01" />
+                        <path d="M16 12h.01" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div class="chats" id="chats">
+            <header>
+                <h1>Chat</h1>
+                <button class="closeChat" id="closeChat">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-x">
+                        <path d="M18 6 6 18" />
+                        <path d="m6 6 12 12" />
+                    </svg>
+                </button>
+            </header>
+            <div id="chatBox">
+                <div id="chatMessages">
+                    <ul id="message-content">
+                    </ul>
+                </div>
+            </div>
+            <div class="bottom-bar">
+                <textarea type="text" id="chatInput" type="text" placeholder="Type a message"></textarea>
+                <button id="sendChat">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-send-horizontal">
+                        <path
+                            d="M3.714 3.048a.498.498 0 0 0-.683.627l2.843 7.627a2 2 0 0 1 0 1.396l-2.842 7.627a.498.498 0 0 0 .682.627l18-8.5a.5.5 0 0 0 0-.904z" />
+                        <path d="M6 12h16" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+    <script src="./webrtcLogic.js" defer>
+    </script>
+</body>
+
+</html>
