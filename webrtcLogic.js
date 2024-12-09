@@ -1,4 +1,4 @@
-const socket = io('https://video-demo-8bzc.onrender.com'); // Update to your server's URL
+const socket = io('https://video-demo-roan.vercel.app/'); // Update to your server's URL
 const localVideo = document.getElementById('localVideo');
 const remoteVideo = document.getElementById('remoteVideo');
 const endCallButton = document.getElementById('endCall');
