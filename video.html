@@ -51,7 +51,6 @@
             padding: 5px 12px;
             border-radius: 46%;
             cursor: pointer;
-
         }
 
 
@@ -67,6 +66,7 @@
 
         #remoteVideo {
             width: 75vw;
+            height: 80vh;
             margin: auto;
             display: grid;
             position: absolute;
@@ -89,6 +89,12 @@
             position: relative;
             height: 100vh;
             border: 2px solid #5b6d2f;
+        }
+
+        #chats h1 {
+            color: #5b6d2f;
+            margin: auto;
+            font-size: 1.5rem;
         }
 
         #closeChat {
@@ -117,6 +123,11 @@
             font-size: medium;
         }
 
+        #closeChat {
+            margin: 0px !important;
+            padding: 0px !important;
+        }
+
         #sendChat {
             color: #5b6d2f;
             cursor: pointer;
@@ -127,11 +138,8 @@
         header {
             height: 4rem;
             border: 2px solid #5b6d2f;
-        }
-
-        header h1 {
-            color: #5b6d2f;
-            padding: 10px;
+            display: flex;
+            justify-content: center;
         }
 
         #chatMessages {
@@ -157,8 +165,39 @@
             padding: 10px;
             cursor: pointer;
         }
-        #endCall{
-            color: #232e05; 
+
+        #endCall {
+            color: #232e05;
+        }
+
+        #confirmation-box {
+            display: block;
+            background-color: #5b6d2f;
+            color: white;
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            width: 20vw;
+            z-index: 990;
+        }
+
+        #confirmation-box h3 {
+            padding: 10px;
+            background-color: #5b6d2f;
+        }
+        .offerButton{
+            display: flex;
+            justify-content: space-around;
+            background-color: #5b6d2f;
+        }
+
+        .offerButton button {
+            background-color: #5b6d2f;;
+            cursor: pointer;
+        }
+        .offerButton button svg {
+            background-color: #5b6d2f;
+            color: white;
         }
     </style>
 
@@ -166,6 +205,7 @@
 
 <body>
     <div id="confirmation-box">
+        </div>
     </div>
     <div class="container">
         <div class="main-container">
@@ -199,7 +239,8 @@
                     </svg>
                 </button>
                 <button id="endCall">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="#232e05" height="28px" viewBox="0 -960 960 960" width="28px">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="#232e05" height="28px" viewBox="0 -960 960 960"
+                        width="28px">
                         <path
                             d="m136-304-92-90q-12-12-12-28t12-28q88-95 203-142.5T480-640q118 0 232.5 47.5T916-450q12 12 12 28t-12 28l-92 90q-11 11-25.5 12t-26.5-8l-116-88q-8-6-12-14t-4-18v-114q-38-12-78-19t-82-7q-42 0-82 7t-78 19v114q0 10-4 18t-12 14l-116 88q-12 9-26.5 8T136-304Zm104-198q-29 15-56 34.5T128-424l40 40 72-56v-62Zm480 2v60l72 56 40-38q-29-26-56-45t-56-33Zm-480-2Zm480 2Z" />
                     </svg>

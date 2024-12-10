@@ -1,4 +1,4 @@
-const socket = io('https://video-demo-8bzc.onrender.com'); // Update to your server's URL
+const socket = io('http://localhost:3000/'); // Update to your server's URL
 const localVideo = document.getElementById('localVideo');
 const remoteVideo = document.getElementById('remoteVideo');
 const endCallButton = document.getElementById('endCall');
@@ -252,9 +252,24 @@ socket.on('askToHost', ({ otherUser, roomID, socketID }) => {
     if (role === "host") {
         console.log(`${otherUser} wants to join the room`);
         offerAcceptButton.innerHTML = `
-        <h3>${otherUser} wants to join the room</h3>
-        <button id="acceptOfferButton">Accept</button>
-        <button id="rejectOfferButton">Reject</button>
+         <h3>${otherUser} wants to join the room</h3>
+        <div class="offerButton">
+            <button id="acceptOfferButton">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="lucide lucide-check">
+                <path d="M20 6 9 17l-5-5" />
+            </svg>
+               </button>
+        <button id="rejectOfferButton">
+         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" class="lucide lucide-x">
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
+            </svg>
+            
+        </button>
     `;
         const acceptOfferButton = document.getElementById('acceptOfferButton');
         const rejectOfferButton = document.getElementById('rejectOfferButton');
