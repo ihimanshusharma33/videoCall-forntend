@@ -58,8 +58,7 @@
         .dragableDiv {
             width: 15%;
             height: 30%;
-            border: 2px solid red;
-            background-color: aqua;
+            background-color: rgb(0, 0, 0);
             position: absolute;
             cursor: move;
         }
@@ -73,14 +72,14 @@
             top: 10px;
             right: 10%;
             place-content: center;
-            border: 2px solid red;
+            background-color: rgb(0, 0, 0);
         }
 
         #localVideo {
-            border: 2px solid black;
             position: absolute;
             right: 10px;
             bottom: 10px;
+            background-color: rgb(0, 0, 0);
         }
 
         #chats {
@@ -185,19 +184,101 @@
             padding: 10px;
             background-color: #5b6d2f;
         }
-        .offerButton{
+
+        .offerButton {
             display: flex;
             justify-content: space-around;
             background-color: #5b6d2f;
         }
 
         .offerButton button {
-            background-color: #5b6d2f;;
+            background-color: #5b6d2f;
+            ;
             cursor: pointer;
         }
+
         .offerButton button svg {
             background-color: #5b6d2f;
             color: white;
+        }
+        #openChat{
+            position: relative !important;
+        }
+        .dot{
+            height: 14px;
+            width: 14px;
+            background-color: #232e05;
+            border-radius: 50%;
+            position: absolute;
+            right: 6px;
+            display: none;
+            margin: 0px;
+            z-index: 1000;
+        }
+
+        @media screen and (max-width:780px) {
+            #remoteVideo {
+                width: 90vw;
+                height: 50vh;
+                left: 20px;
+            }
+
+            .buttonSection {
+                width: 100vw;
+                bottom: 0px;
+                left: 0px;
+                padding: 8px 0px;
+                height: 9vh;
+                border-radius: 0px;
+                z-index: 1000;
+            }
+
+            button {
+                padding: 5px 10px;
+                margin: 5px 15px;
+            }
+
+            #chatButton {
+                display: none !important;
+            }
+
+            #chats {
+                width: 100vw;
+                height: 38vh;
+                position: absolute;
+                top: 52vh;
+                left: 0px;
+            }
+
+            #chatMessages {
+                height: 22vh;
+                width: 100%;
+            }
+
+            #localVideo {
+                width: 50vw;
+                height: 30vh;
+                bottom: 10vh;
+                right: 20px;
+            }
+
+            header {
+                height: 6vh;
+            }
+
+            .bottom-bar {
+                width: 100vw;
+                height: 10vh;
+            }
+
+            #confirmation-box {
+                display: block;
+                background-color: #5b6d2f;
+                color: white;
+                position: absolute;
+                width: 90vw;
+                z-index: 1100;
+            }
         }
     </style>
 
@@ -218,7 +299,7 @@
                     <line x1="4" x2="20" y1="18" y2="18" />
                 </svg>
             </button>
-            <video id="remoteVideo" autoplay playsinline>This is Remote Videp</video>
+            <video id="remoteVideo" autoplay playsinline><span>Wating for others to join</span></video>
             <video id="localVideo" class="dragableDiv" autoplay playsinline muted></video>
             <div class="buttonSection">
                 <button id="muteAudio">
@@ -246,6 +327,7 @@
                     </svg>
                 </button>
                 <button id="openChat">
+                    <span class="dot" id="dot"></span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-message-circle-more">

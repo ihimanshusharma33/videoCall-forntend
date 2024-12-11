@@ -13,6 +13,7 @@ const sendChat = document.getElementById('sendChat');
 const chatInput = document.getElementById('chatInput');
 const chatMessages = document.getElementById('message-content');
 const endCall = document.getElementById('endCall');
+const dot=document.getElementById('dot');
 
 const VideoMute = '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-video-off"><path d="M10.66 6H14a2 2 0 0 1 2 2v2.5l5.248-3.062A.5.5 0 0 1 22 7.87v8.196"/><path d="M16 16a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h2"/><path d="m2 2 20 20"/></svg>';
 const VideoUnmute = '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-video"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg>';
@@ -44,21 +45,19 @@ let offsetX = 0;
 let offsetY = 0;
 
 chatButton.onclick = () => {
-    console.log('Chat open button clicked')
     chats.style.display = 'block';
     chatButton.style.display = 'none';
     remoteVideo.style.width = '65vw';
 }
 
 closeChat.onclick = () => {
-    console.log('Close chat button clicked')
     chats.style.display = 'none';
     chatButton.style.display = 'block';
     remoteVideo.style.width = '75vw';
 }
 openChat.onclick = () => {
-    console.log('Open chat button clicked')
     chats.style.display = 'block';
+    dot.style.display='none';
     chatButton.style.display = 'none';
     remoteVideo.style.width = '65vw';
 }
@@ -121,7 +120,6 @@ const startLocalVideo = async () => {
             ,
             video: true,
         });
-        console.log({ stream });
         localStream = stream;
         localVideo.srcObject = stream;
     } catch (error) {
@@ -133,14 +131,10 @@ const startLocalVideo = async () => {
 
 // // Create a peer connection
 const PeerConnection = (() => {
-    console.log('PeerConnection function called');
-
     let peerConnection; // Singleton instance
-
     const createPeerConnection = async () => {
         // Ensure localStream is initialized
         if (!localStream) {
-            console.log('Waiting for local stream...');
             await startLocalVideo();
         }
 
@@ -161,14 +155,12 @@ const PeerConnection = (() => {
 
         // Listen for remote stream and set it to the video element
         peerConnection.ontrack = (event) => {
-            console.log('Received remote stream:', event.streams[0]);
             remoteVideo.srcObject = event.streams[0];
         };
 
         // Listen for ICE candidates and send them to the server
         peerConnection.onicecandidate = (event) => {
             if (event.candidate) {
-                console.log('Sending ICE candidate: to server', event.candidate);
                 socket.emit('icecandidate', { roomID, candidate: event.candidate });
 
             }
@@ -230,15 +222,12 @@ if (!role || !roomID || !userName) {
 
 // Notify connection to server
 socket.on('connect', () => {
-    console.log('Connected to socket server with ID:', socket.id);
     // Create or join a room based on role
     if (role === 'host') {
-        console.log('Host joining room:', roomID);
         socket.emit('createRoom', { roomID, userName });
         startCall();
     }
     else {
-        console.log('Requesting host to join in the rooom', roomID, 'and user', userName);
         socket.emit('askToHost', { otherUser: userName, roomID, socketID: socket.id, role: role });
     }
 });
@@ -247,10 +236,9 @@ socket.on('connect', () => {
 //ask to host for joining the other non-host user
 socket.on('askToHost', ({ otherUser, roomID, socketID }) => {
     if (!otherUser || !roomID) {
-        console.log('Missing data for askToHost event');
+        return;
     }
     if (role === "host") {
-        console.log(`${otherUser} wants to join the room`);
         offerAcceptButton.innerHTML = `
          <h3>${otherUser} wants to join the room</h3>
         <div class="offerButton">
@@ -279,15 +267,10 @@ socket.on('askToHost', ({ otherUser, roomID, socketID }) => {
             offerAcceptButton.innerHTML = '';
         };
         document.getElementById('rejectOfferButton').onclick = () => {
-            console.log(`Rejected ${otherUser}`);
             socket.emit('rejectOffer', { message: `host rejected the offer to join the room`, otherUser, roomID });
-            //
-            // here reject event emited
-            //
             offerAcceptButton.innerHTML = '';
         };
     }
-    console.log('askToHost event triggered');
 })
 
 // Handle errors from the server
@@ -296,14 +279,11 @@ socket.on('error', (error) => {
     window.location.href = '../index.html';
 });
 socket.on('hostAcceptOffer', ({ message, otherUser, roomID }) => {
-    console.log(role);
     if (role === 'join') {
-        console.log('Host accepted the offer to join the room');
         startCall();
     }
 });
 socket.on('rejectOffer', ({ message, otherUser, roomID }) => {
-    console.log('Host rejected the offer to join the room');
     alert('Host rejected the offer to join the room');
 })
 
@@ -316,7 +296,7 @@ sendChat.onclick = () => {
 socket.on('ReceiveMessage', ({ FormatedMessage, socketID, roomID }) => {
     messages.push(FormatedMessage);
     updateUI();
-    console.log('Private message received:', FormatedMessage, 'in the room', roomID);
+    dot.style.display='block';
 });
 
 // Handle incoming WebRTC 'offer' event
@@ -331,21 +311,19 @@ socket.on('offer', async ({ from, offer }) => {
         await pc.setLocalDescription(answer);
         socket.emit('answer', { to: from, answer: pc.localDescription });
     } catch (error) {
-        console.log('[WebRTC] Error handling offer:', error);
+        console.error( error);
     }
 });
 
 // Handle 'answer' event from the server
 socket.on('answer', async ({ from, answer }) => {
-    console.log(`Received answer from: ${from}`, answer);
     try {
         // Get the PeerConnection instance
         const pc = await PeerConnection.getInstance()
         // Set the received answer as the remote description
         await pc.setRemoteDescription(new RTCSessionDescription(answer));
-        console.log('Remote description set with the received answer.');
     } catch (error) {
-        console.error('Error handling answer:', error);
+        console.error( error);
     }
 });
 
@@ -357,9 +335,9 @@ socket.on('icecandidate', async (data) => {
         // Add the ICE candidate to the peer connection
         if (candidate) {
             await pc.addIceCandidate(new RTCIceCandidate(candidate));
-            console.log('ICE candidate added successfully.');
-        } else {
-            console.warn('Invalid candidate received:', candidate);
+        } 
+        else {
+            console.warn(candidate);
         }
     } catch (error) {
         console.error('Error adding ICE candidate:', error);
@@ -372,9 +350,7 @@ const startCall = async () => {
         const pc = await PeerConnection.getInstance();
         const offer = await pc.createOffer();
         await pc.setLocalDescription(offer);
-        console.log('Local description set with offer:', offer);
         socket.emit('offer', { roomID, offer });
-        console.log('Offer sent to server.');
     }
     catch (error) {
         console.error('Error starting call:', error);
